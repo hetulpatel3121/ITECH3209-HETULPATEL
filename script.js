@@ -8,10 +8,11 @@ const Questions = [
         q: "Easy Question 1 ?",
         type: "easy",
         score: "1",
-        a: [{ text: "Wrong Answer 1", isCorrect: false },
-        { text: "Wrong Answer 2", isCorrect: false },
-        { text: "Correct Answer", isCorrect: true },
-        { text: "Wrong Answer 3", isCorrect: false }
+        a: [
+            { text: "Wrong Answer 1", isCorrect: false },
+            { text: "Wrong Answer 2", isCorrect: false },
+            { text: "Correct Answer", isCorrect: true },
+            { text: "Wrong Answer 3", isCorrect: false }
         ]
 
     },
@@ -360,7 +361,7 @@ const Questions = [
 // Set start
 var start = true;
 
-// Iterate
+// This function will help us to understand which Questions will be displayed on screen.
 function iterate(id) {
 
     // Getting the result display section
@@ -382,28 +383,31 @@ function iterate(id) {
     const op3 = document.getElementById('op3');
     const op4 = document.getElementById('op4');
 
-    // Providing option text 
+    // Setting the option text 
     op1.innerText = selectedQuestions.a[0].text;
     op2.innerText = selectedQuestions.a[1].text;
     op3.innerText = selectedQuestions.a[2].text;
     op4.innerText = selectedQuestions.a[3].text;
 
-    // Providing the true or false value to the options
+    // Setting the option Value 
     op1.value = selectedQuestions.a[0].isCorrect;
     op2.value = selectedQuestions.a[1].isCorrect;
     op3.value = selectedQuestions.a[2].isCorrect;
     op4.value = selectedQuestions.a[3].isCorrect;
 
+    // Setting the option Type - Easy, Medium and Hard 
     op1.type = selectedQuestions.type;
     op2.type = selectedQuestions.type;
     op3.type = selectedQuestions.type;
     op4.type = selectedQuestions.type;
 
+    // Setting the option Question ID
     op1.setAttribute("questionid", selectedQuestions.id);
     op2.setAttribute("questionid", selectedQuestions.id);
     op3.setAttribute("questionid", selectedQuestions.id);
     op4.setAttribute("questionid", selectedQuestions.id);
 
+    // Setting the option Score
     op1.setAttribute("score", Questions[id].score);
     op2.setAttribute("score", Questions[id].score);
     op3.setAttribute("score", Questions[id].score);
@@ -411,7 +415,7 @@ function iterate(id) {
 
     var selected = "";
 
-    // Show selection for op1
+    // Event for op1
     op1.addEventListener("click", (event) => {
         op1.style.backgroundColor = "lightgoldenrodyellow";
         op2.style.backgroundColor = "lightskyblue";
@@ -425,10 +429,15 @@ function iterate(id) {
 
         // }
         tmpPreviousReponse = [];
-        tmpPreviousReponse.push({ questionid: event.target.getAttribute('questionid'), type: event.target.getAttribute('type'), response: selected, score: individualscore });
+        tmpPreviousReponse.push({
+            questionid: event.target.getAttribute('questionid'),
+            type: event.target.getAttribute('type'),
+            response: selected,
+            score: individualscore
+        });
     })
 
-    // Show selection for op2
+    // Event for op2
     op2.addEventListener("click", (event) => {
         op1.style.backgroundColor = "lightskyblue";
         op2.style.backgroundColor = "lightgoldenrodyellow";
@@ -443,7 +452,7 @@ function iterate(id) {
         tmpPreviousReponse.push({ questionid: event.target.getAttribute('questionid'), type: event.target.getAttribute('type'), response: selected, score: individualscore });
     })
 
-    // Show selection for op3
+    // Event for op3
     op3.addEventListener("click", (event) => {
         op1.style.backgroundColor = "lightskyblue";
         op2.style.backgroundColor = "lightskyblue";
@@ -459,7 +468,7 @@ function iterate(id) {
         tmpPreviousReponse.push({ questionid: event.target.getAttribute('questionid'), type: event.target.getAttribute('type'), response: selected, score: individualscore });
     })
 
-    // Show selection for op4
+    // Event for op4
     op4.addEventListener("click", (event) => {
         op1.style.backgroundColor = "lightskyblue";
         op2.style.backgroundColor = "lightskyblue";
@@ -475,20 +484,10 @@ function iterate(id) {
     })
 
     // Grabbing the evaluate button
-    const evaluate = document.getElementsByClassName("evaluate");
 
-    // Evaluate method
-    evaluate[0].addEventListener("click", () => {
-        if (selected == "true") {
-            result[0].innerHTML = "True";
-            result[0].style.color = "green";
-        } else {
-            result[0].innerHTML = "False";
-            result[0].style.color = "red";
-        }
-    })
 }
 
+// On Page Load which Question to show
 if (start) {
     iterate(1);
 }
@@ -500,12 +499,10 @@ var type = "easy";
 
 next.addEventListener("click", () => {
     start = false;
-
     if (allResponses.length == 4) {
+        //temporary store user result in broswer local storage
         localStorage.setItem("result", JSON.stringify(allResponses));
         window.location.href = "./result.html";
-
-
     } else {
         allResponses.push(...tmpPreviousReponse);
         allResponsesId.push(...tmpPreviousReponse.map((item) => {
@@ -516,10 +513,11 @@ next.addEventListener("click", () => {
 
         if (lastElement.response == "true") {
             console.log('CORRECT ANSWER');
+            //REMOVE ASKED QUESTIONS
             const result = Questions.filter((item) => {
                 return allResponsesId.indexOf(item.id) === -1;
-
             });
+            //SET DIFFICULTY LEVEL
             const finalResult = result.find((item) => {
                 if (lastElement.type == "easy") {
                     return item.type == "medium";
@@ -552,14 +550,8 @@ next.addEventListener("click", () => {
             clearButtonStyle();
             iterate(result.id);
         }
-
     }
 
-    // if (id < 5) {
-    //     id++;
-    //     iterate(id);
-    //     console.log(id);
-    // }
 });
 
 function clearButtonStyle() {
